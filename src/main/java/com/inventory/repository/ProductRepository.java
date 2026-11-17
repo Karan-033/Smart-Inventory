@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Comparator;
+
+
 public class ProductRepository {
     private final Map<Integer, Product> products = new HashMap<>();
 
@@ -44,5 +48,64 @@ public class ProductRepository {
         }
 
         products.remove(id);
+    }
+
+    public Collection<Product> searchByName(String keyword) {
+
+        if (keyword == null || keyword.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Search keyword cannot be null or blank"
+            );
+        }
+
+        List<Product> result = new ArrayList<>();
+
+        String searchKeyword = keyword.trim().toLowerCase();
+
+        for (Product product : products.values()) {
+
+            if (product.getName().toLowerCase().contains(searchKeyword)) {
+                result.add(product);
+            }
+        }
+
+        return result;
+    }
+
+    public List<Product> sortByName() {
+
+        List<Product> sortedProducts =
+                new ArrayList<>(products.values());
+
+        sortedProducts.sort(
+                Comparator.comparing(Product::getName)
+        );
+
+        return sortedProducts;
+    }
+    //sort products by price
+    public List<Product> sortByPrice() {
+
+        List<Product> sortedProducts =
+                new ArrayList<>(products.values());
+
+        sortedProducts.sort(
+                Comparator.comparing(Product::getPrice)
+        );
+
+        return sortedProducts;
+    }
+
+    //sort product by quantity
+    public List<Product> sortByQuantity() {
+
+        List<Product> sortedProducts =
+                new ArrayList<>(products.values());
+
+        sortedProducts.sort(
+                Comparator.comparingInt(Product::getQuantity).reversed()
+        );
+
+        return sortedProducts;
     }
 }

@@ -89,13 +89,6 @@ mvn clean compile
 mvn clean test
 ```
 
-## Learning Progress
-
-| Milestone | Description | Status |
-|---|---|---|
-| M1 | Project setup and Product domain model | Completed |
-| M2 | Product Repository implementation | In Progress |
-| M3–M12 | Inventory features, DSA, persistence and final testing | Planned |
 
 ## Development Approach
 
