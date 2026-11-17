@@ -7,25 +7,31 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ProductRepositoryTest {
     @Test
-    void shouldAddProductSccessfully(){
+    void shouldDeleteProductSuccessfully() {
+
         ProductRepository repository = new ProductRepository();
 
         Product product = new Product(
-                101,
-                "Wireless Mouse",
-                new BigDecimal("799.00"),
-                50,
-                10
+                101, "Mouse", new BigDecimal("500"), 10, 2
         );
-        assertDoesNotThrow(() -> repository.addProduct(product));
+
+        repository.addProduct(product);
+        repository.deleteProduct(101);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> repository.getProductById(101)
+        );
     }
 
     @Test
-    void shouldRejectDuplicateProductId(){
+    void shouldThrowExceptionWhenDeletingNonExistingProduct() {
+
         ProductRepository repository = new ProductRepository();
-        Product product1 = new Product(101,"Mouse",new BigDecimal("500"),10,2);
-        Product product2 = new Product(101,"Keyboard",new BigDecimal("1000"),5,1);
-        repository.addProduct(product1);
-        assertThrows(IllegalArgumentException.class,() -> repository.addProduct(product2));
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> repository.deleteProduct(999)
+        );
     }
 }
