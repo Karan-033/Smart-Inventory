@@ -7,6 +7,8 @@ import com.inventory.repository.ProductRepository;
 import com.inventory.repository.TransactionRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import com.inventory.model.StockTransaction;
 
 public class InventoryService {
 
@@ -64,6 +66,20 @@ public class InventoryService {
         );
 
         transactionRepository.addTransaction(transaction);
+    }
+
+    public List<StockTransaction> getTransactionHistory(int productId) {
+        return transactionRepository.getTransactionsByProductId(productId);
+    }
+
+    public List<StockTransaction> getTransactionHistoryBetween(
+            int productId,
+            LocalDateTime start,
+            LocalDateTime end) {
+
+        return transactionRepository.getTransactionsByProductIdBetween(
+                productId, start, end
+        );
     }
 
 }

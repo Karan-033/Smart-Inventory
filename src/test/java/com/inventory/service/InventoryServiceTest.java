@@ -7,9 +7,8 @@ import com.inventory.repository.TransactionRepository;
 import java.util.List;
 import com.inventory.model.StockTransaction;
 import com.inventory.model.TransactionType;
-
+import java.time.LocalDateTime;
 import java.math.BigDecimal;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -340,5 +339,73 @@ class InventoryServiceTest {
                 transactions.get(0).getTransactionId(),
                 transactions.get(1).getTransactionId()
         );
+    }
+
+    @Test
+    void shouldGetTransactionHistoryForProduct() {
+        ProductRepository productRepository = new ProductRepository();
+        TransactionRepository transactionRepository = new TransactionRepository();
+
+        Product product = new Product(
+                105, "Webcam", new BigDecimal("3000"), 10, 2
+        );
+        productRepository.addProduct(product);
+
+        InventoryService service = new InventoryService(
+                productRepository, transactionRepository
+        );
+
+        service.restockProduct(105, 5);
+        service.sellProduct(105, 2);
+
+        List<StockTransaction> history =
+                service.getTransactionHistory(105);
+
+        assertEquals(2, history.size());
+        assertEquals(TransactionType.RESTOCK, history.get(0).getType());
+        assertEquals(TransactionType.SALE, history.get(1).getType());
+    }
+
+    @Test
+    void shouldGetTransactionHistoryBetweenDates() {
+        ProductRepository productRepository = new ProductRepository();
+        TransactionRepository transactionRepository = new TransactionRepository();
+
+        Product product = new Product(
+                106, "USB Hub", new BigDecimal("800"), 10, 2
+        );
+        productRepository.addProduct(product);
+
+        InventoryService service = new InventoryService(
+                productRepository, transactionRepository
+        );
+
+        service.restockProduct(106, 5);
+        service.sellProduct(106, 2);
+
+        LocalDateTime start = LocalDateTime.now().minusMinutes(1);
+        LocalDateTime end = LocalDateTime.now().plusMinutes(1);
+
+        List<StockTransaction> history =
+                service.getTransactionHistoryBetween(106, start, end);
+
+        assertEquals(2, history.size());
+        assertEquals(TransactionType.RESTOCK, history.get(0).getType());
+        assertEquals(TransactionType.SALE, history.get(1).getType());
+    }
+
+    @Test
+    void shouldReturnEmptyHistoryWhenProductHasNoTransactions() {
+        ProductRepository productRepository = new ProductRepository();
+        TransactionRepository transactionRepository = new TransactionRepository();
+
+        InventoryService service = new InventoryService(
+                productRepository, transactionRepository
+        );
+
+        List<StockTransaction> history =
+                service.getTransactionHistory(999);
+
+        assertTrue(history.isEmpty());
     }
 }
