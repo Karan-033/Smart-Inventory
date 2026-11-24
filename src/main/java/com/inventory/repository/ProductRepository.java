@@ -108,4 +108,18 @@ public class ProductRepository {
 
         return sortedProducts;
     }
+
+    public List<Product> getLowStockProducts() {
+
+        List<Product> lowStockProducts = new ArrayList<>();
+
+        for (Product product : products.values()) {
+
+            if (product.isLowStock()) {
+                lowStockProducts.add(product);
+            }
+        }
+
+        return lowStockProducts;
+    }
 }

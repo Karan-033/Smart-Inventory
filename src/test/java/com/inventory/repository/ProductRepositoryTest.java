@@ -140,4 +140,33 @@ class ProductRepositoryTest {
         assertEquals("Mouse", result.get(1).getName());
         assertEquals("Keyboard", result.get(2).getName());
     }
+
+    @Test
+    void shouldReturnOnlyLowStockProducts() {
+
+        ProductRepository repository = new ProductRepository();
+
+        Product mouse = new Product(
+                101, "Mouse", new BigDecimal("500"), 5, 10
+        );
+
+        Product keyboard = new Product(
+                102, "Keyboard", new BigDecimal("1000"), 20, 5
+        );
+
+        Product adapter = new Product(
+                103, "Adapter", new BigDecimal("200"), 3, 3
+        );
+
+        repository.addProduct(mouse);
+        repository.addProduct(keyboard);
+        repository.addProduct(adapter);
+
+        List<Product> result = repository.getLowStockProducts();
+
+        assertEquals(2, result.size());
+        assertTrue(result.contains(mouse));
+        assertTrue(result.contains(adapter));
+        assertFalse(result.contains(keyboard));
+    }
 }
