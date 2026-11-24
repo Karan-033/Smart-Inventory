@@ -95,4 +95,95 @@ class InventoryServiceTest {
 
         assertEquals(5, product.getQuantity());
     }
+
+    @Test
+    void shouldRejectRestockWhenIntegerOverflows() {
+
+        Product product = new Product(
+                101,
+                "Mouse",
+                new BigDecimal("500"),
+                Integer.MAX_VALUE,
+                0
+        );
+
+        assertThrows(
+                ArithmeticException.class,
+                () -> product.restock(1)
+        );
+
+        assertEquals(Integer.MAX_VALUE, product.getQuantity());
+    }
+
+    @Test
+    void shouldRejectZeroRestockAmount() {
+
+        Product product = new Product(
+                101, "Mouse", new BigDecimal("500"), 10, 2
+        );
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> product.restock(0)
+        );
+
+        assertEquals(10, product.getQuantity());
+    }
+
+    @Test
+    void shouldRejectNegativeRestockAmount() {
+
+        Product product = new Product(
+                101, "Mouse", new BigDecimal("500"), 10, 2
+        );
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> product.restock(-5)
+        );
+
+        assertEquals(10, product.getQuantity());
+    }
+
+    @Test
+    void shouldRejectZeroSaleAmount() {
+
+        Product product = new Product(
+                101, "Mouse", new BigDecimal("500"), 10, 2
+        );
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> product.sell(0)
+        );
+
+        assertEquals(10, product.getQuantity());
+    }
+
+    @Test
+    void shouldRejectNegativeSaleAmount() {
+
+        Product product = new Product(
+                101, "Mouse", new BigDecimal("500"), 10, 2
+        );
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> product.sell(-5)
+        );
+
+        assertEquals(10, product.getQuantity());
+    }
+
+    @Test
+    void shouldAllowSellingAllAvailableStock() {
+
+        Product product = new Product(
+                101, "Mouse", new BigDecimal("500"), 10, 2
+        );
+
+        product.sell(10);
+
+        assertEquals(0, product.getQuantity());
+    }
 }
